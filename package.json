@@ -4,6 +4,8 @@
   "description": "Simple react + rackt/react-router app with server side rendering",
   "main": "build/backend/index.js",
   "scripts": {
+    "prepublish": "gulp build",
+    "develop": "gulp develop",
     "test": "gulp test"
   },
   "repository": {
@@ -23,5 +25,19 @@
   "bugs": {
     "url": "https://github.com/lzrski/react-blog/issues"
   },
-  "homepage": "https://github.com/lzrski/react-blog#readme"
+  "homepage": "https://github.com/lzrski/react-blog#readme",
+  "devDependencies": {
+    "browserify": "^10.2.4",
+    "coffee-reactify": "^3.0.0",
+    "coffee-script": "^1.9.3",
+    "del": "^1.2.0",
+    "gulp": "gulpjs/gulp#4.0",
+    "gulp-cli": "gulpjs/gulp-cli#4.0",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-stylus": "^2.0.5",
+    "gulp-uglify": "^1.2.0",
+    "gulp-webserver": "^0.9.1",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  }
 }
