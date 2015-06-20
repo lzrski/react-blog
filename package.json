@@ -1,0 +1,27 @@
+{
+  "name": "react-blog",
+  "version": "0.0.0",
+  "description": "Simple react + rackt/react-router app with server side rendering",
+  "main": "build/backend/index.js",
+  "scripts": {
+    "test": "gulp test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lzrski/react-blog.git"
+  },
+  "keywords": [
+    "react",
+    "react-router",
+    "server",
+    "side",
+    "rendering",
+    "blog"
+  ],
+  "author": "Tadeusz Łazurski (http://lazurski.pl)",
+  "license": "GPL 3",
+  "bugs": {
+    "url": "https://github.com/lzrski/react-blog/issues"
+  },
+  "homepage": "https://github.com/lzrski/react-blog#readme"
+}
