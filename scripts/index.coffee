@@ -1,10 +1,10 @@
-React       = require 'react'
+React   = require 'react'
 {
   Router
   Route
   Link
-}           = require 'react-router'
-HashHistory = require 'react-router/lib/HashHistory'
+}       = require 'react-router'
+History = require 'react-router/lib/BrowserHistory'
 
 # Promises
 getCats = -> new Promise (resolve, reject) ->
@@ -87,7 +87,7 @@ class Application extends React.Component
     </div>
 
 router = (
-  <Router history={new HashHistory}>
+  <Router history={new History}>
     <Route path='/' component={Application}>
       <Route path='/welcome/:cat' component={Greet} />
     </Route>
