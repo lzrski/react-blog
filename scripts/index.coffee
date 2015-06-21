@@ -28,15 +28,33 @@ class Greet extends React.Component
   render: ->
     <p>Hello, { @props.params?.cat or 'Kitty' }</p>
 
+getCats = -> new Promise (resolve, reject) ->
+  done = -> resolve ['Katiusza', 'George', 'Skubi']
+  delay = 500 + Math.floor (Math.random() * 1000)
+  console.log "Wait #{delay}"
+  setTimeout done, delay
+
 class Application extends React.Component
+  constructor : (props) ->
+    super props
+    @state = cats: null
+
+  componentDidMount : ->
+    getCats().then (cats) => @setState { cats }
+
   render  : ->
     <div>
       <h1>Welcome to the Application</h1>
-      <ul>
-        { for cat in ['George', 'Katiusza', 'Skubi']
-          <li><Link to={ "/welcome/#{cat}" }>{ cat }</Link></li>
-        }
-      </ul>
+      {
+        if @state.cats
+          <ul>
+            { for cat in @state.cats
+              <li key={cat}><Link to={ "/welcome/#{cat}" }>{ cat }</Link></li>
+            }
+          </ul>
+        else
+          <p>Loading cats...</p>
+      }
       <Counter />
       { @props.children or <p>Choose a cat</p> }
     </div>
