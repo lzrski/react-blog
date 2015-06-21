@@ -1,5 +1,5 @@
 gulp        = require 'gulp'
-coffee      = require 'gulp-coffee'
+coffee      = require 'gulp-cjsx'
 browserify  = require 'browserify'
 reactify    = require 'coffee-reactify'
 uglify      = require 'gulp-uglify'
@@ -12,11 +12,13 @@ sourcemaps  = require 'gulp-sourcemaps'
 {Readable}  = require 'stream'
 {fork}      = require 'child_process'
 
-gulp.task 'scripts', ->
+# It's a hybrid application, so frontend and backend code is mostly shared.
+# Main difference is that frontend goes through browserify.
+gulp.task 'frontend', ->
   { NODE_ENV } = process.env
 
   b = browserify
-    entries   : './scripts/index.coffee'
+    entries   : './scripts/frontend.coffee'
     debug     : NODE_ENV is 'development'
     transform : reactify
     extensions: ['.coffee', '.cjsx']
@@ -28,9 +30,11 @@ gulp.task 'scripts', ->
     .pipe buffer()
     .pipe gulp.dest 'build/frontend/scripts'
 
+
+# Backend is mostly the same as frontend, but it just get's compiled from cjsx.
 gulp.task 'backend', ->
   gulp
-    .src 'backend/**/*.coffee'
+    .src 'scripts/**/*.coffee'
     .pipe do coffee
     .pipe gulp.dest 'build/'
 
@@ -67,17 +71,24 @@ gulp.task 'build', gulp.series [
   'clear'
   gulp.parallel [
     'assets'
-    'scripts'
-    'styles'
     'backend'
+    'frontend'
+    'styles'
   ]
 ]
 
 gulp.task 'watch', (done) ->
-  gulp.watch ['./scripts/**/*'],  gulp.series ['scripts']
-  gulp.watch ['./backend/**/*'],  gulp.series ['backend', 'serve']
-  gulp.watch ['./assets/**/*'],   gulp.series ['assets']
-  gulp.watch ['./styles/**/*'],   gulp.series ['styles']
+  gulp.watch ['./scripts/**/*'],  gulp.series [
+    # First build...
+    gulp.parallel [
+      'frontend'
+      'backend'
+    ]
+    # ...then serve
+    'serve'
+  ]
+  gulp.watch ['./assets/**/*'],   gulp.series   ['assets']
+  gulp.watch ['./styles/**/*'],   gulp.series   ['styles']
 
 
   # It is never done :)
