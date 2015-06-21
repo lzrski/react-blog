@@ -6,6 +6,25 @@ React       = require 'react'
 }           = require 'react-router'
 HashHistory = require 'react-router/lib/HashHistory'
 
+# Promises
+getCats = -> new Promise (resolve, reject) ->
+  done = -> resolve ['Katiusza', 'George', 'Skubi']
+  delay = 500 + Math.floor (Math.random() * 1000)
+  console.log "Wait #{delay} for a list"
+  setTimeout done, delay
+
+getCat = (name) -> new Promise (resolve, reject) ->
+  done = ->
+    if name.toLowerCase() in ['katiusza', 'george', 'skubi']
+      resolve "Cat's name is #{name.toUpperCase()}"
+    else
+      reject new Error 'No such cat'
+
+  delay = 500 + Math.floor (Math.random() * 1000)
+  console.log "Wait #{delay} for a cat"
+  setTimeout done, delay
+
+# Components
 class Counter extends React.Component
   constructor: (props) ->
     super props
@@ -25,14 +44,22 @@ class Counter extends React.Component
     </button>
 
 class Greet extends React.Component
-  render: ->
-    <p>Hello, { @props.params?.cat or 'Kitty' }</p>
+  constructor : (props) ->
+    super props
+    @state = cat: null
 
-getCats = -> new Promise (resolve, reject) ->
-  done = -> resolve ['Katiusza', 'George', 'Skubi']
-  delay = 500 + Math.floor (Math.random() * 1000)
-  console.log "Wait #{delay}"
-  setTimeout done, delay
+  componentDidMount : ->
+    getCat(@props.params.cat).then (cat) => @setState { cat }
+
+  componentWillUpdate : (props, state) ->
+    if props.params.cat isnt @props.params.cat
+      @setState cat: null
+      getCat(props.params.cat).then (cat) => @setState { cat }
+
+  render: ->
+    { cat } = @state
+    if cat? then <p>Hello, { cat }!</p>
+    else <p>Please wait for the cat...</p>
 
 class Application extends React.Component
   constructor : (props) ->
