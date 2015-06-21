@@ -1,4 +1,9 @@
-React = require 'react'
+React       = require 'react'
+{
+  Router
+  Route
+}           = require 'react-router'
+HashHistory = require 'react-router/lib/HashHistory'
 
 class Counter extends React.Component
   constructor: (props) ->
@@ -19,21 +24,22 @@ class Counter extends React.Component
     </button>
 
 class Greet extends React.Component
-  @defaultProps :
-    name: 'Kitty'
-
   render: ->
-    <p>Hello, { @props.name }</p>
+    <p>Hello, { @props.params?.cat or 'Kitty' }</p>
 
 class Application extends React.Component
   render  : ->
     <div>
       <h1>Welcome to the Application</h1>
       <Counter />
-      <Greet name="Katiusza" />
-      <Greet name="George" />
-      <Greet name="Skubi" />
+      { @props.children or <p>Choose a cat</p> }
     </div>
 
-
-React.render <Application />, document.body
+router = (
+  <Router history={new HashHistory}>
+    <Route path='/' component={Application}>
+      <Route path='/welcome/:cat' component={Greet} />
+    </Route>
+  </Router>
+)
+React.render router, document.body
