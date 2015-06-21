@@ -10,19 +10,25 @@ Cats      = require '../models/Cats'
 module.exports = class Application extends React.Component
   constructor : (props) ->
     super props
-    @state = cats: null
+    @state = cats: new Cats
 
   componentDidMount : ->
-    Cats.fetch().then (cats) => @setState { cats }
+    { cats } = @state
+    cats
+      .fetch()
+      .then =>
+        @setState { cats }
 
   render  : ->
     <div>
       <h1>Welcome to the Application</h1>
       {
-        if @state.cats
+        if @state.cats.items?
           <ul>
-            { for cat in @state.cats
-              <li key={cat}><Link to={ "/welcome/#{cat}" }>{ cat }</Link></li>
+            { for cat in @state.cats.items
+              <li key={cat.slug}>
+                <Link to={ "/welcome/#{cat.slug}" }>{ cat.name }</Link>
+              </li>
             }
           </ul>
         else
