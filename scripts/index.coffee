@@ -2,6 +2,7 @@ React       = require 'react'
 {
   Router
   Route
+  Link
 }           = require 'react-router'
 HashHistory = require 'react-router/lib/HashHistory'
 
@@ -31,6 +32,11 @@ class Application extends React.Component
   render  : ->
     <div>
       <h1>Welcome to the Application</h1>
+      <ul>
+        { for cat in ['George', 'Katiusza', 'Skubi']
+          <li><Link to={ "/welcome/#{cat}" }>{ cat }</Link></li>
+        }
+      </ul>
       <Counter />
       { @props.children or <p>Choose a cat</p> }
     </div>
