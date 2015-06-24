@@ -1,4 +1,4 @@
-module.exports = 
+module.exports =
   path        : '/'
   component   : require './components/Application'
   childRoutes : [

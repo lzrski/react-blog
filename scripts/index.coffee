@@ -17,9 +17,20 @@ app.use Express.static 'build/frontend/'
 app.get '*', (req, res, done) ->
   # TODO: Disassable the pyramid of doom
   location = new Location req.path, req.query
+  console.log """
+
+    ---
+
+    GET #{location.pathname}
+  """
   Router.run  routes, location, (error, state, transition) ->
+    if error then return done error
+
+    # TODO: Is this a correct approach?
+    if not state then return done new Error "Not Found (404)"
+
     console.dir state # TODO: What excacly to do with that?
-    promises = state?.branch
+    promises = state.branch
       .filter (route) -> typeof route.component.fetch is 'function'
       .map    (route) ->
         route.component
@@ -44,6 +55,21 @@ app.get '*', (req, res, done) ->
       .catch (error) ->
         console.log 'There was an error while resolving all promises'
         console.error error
+        return done error
 
+app.use (error, req, res, done) ->
+  res.type 'text/plain'
+  switch error.message
+    when "Not Found (404)"
+      return res
+        .status 404
+        .send 'Not found. Sorry.'
+    else
+      return res
+        .status 500
+        .send """
+          #{error.message}
+          Such an error. What can I do?
+        """
 
 app.listen 8020
