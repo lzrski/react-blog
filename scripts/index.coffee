@@ -13,7 +13,7 @@ routes      = require './routes'
 
 app = new Express
 
-app.use Express.static 'build/frontend/'
+app.use '/assets/', Express.static 'build/frontend/'
 app.get '*', (req, res, done) ->
   # TODO: Disassable the pyramid of doom
   location = new Location req.path, req.query

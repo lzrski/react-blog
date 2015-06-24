@@ -33,7 +33,7 @@ module.exports = class Application extends React.Component
     console.dir @props
 
     <div>
-      <h1>Welcome to the Application</h1>
+      <Link to = '/'><h1>Welcome to the Application</h1></Link>
       {
         if @state.cats.items?
           <ul>
