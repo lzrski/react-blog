@@ -5,10 +5,16 @@ React     = require 'react'
 Cat       = require '../models/Cat'
 
 module.exports = class Greet extends React.Component
+  @fetch = (params) ->
+    console.log 'Fetching the cat'
+    console.dir params
+    cat = new Cat params.cat
+    do cat.fetch # Return a promise that resolves to cat model
+
   constructor : (props) ->
     super props
     @state =
-      cat   : new Cat props.params.cat
+      cat   : props.route?.data or new Cat props.params.cat
 
   update: (slug) ->
     slug ?= @props.params.cat
@@ -26,6 +32,9 @@ module.exports = class Greet extends React.Component
     if props.params.cat isnt @props.params.cat then @update props.params.cat
 
   render: ->
+    console.log "Props of greet"
+    console.dir @props
+
     { error, cat } = @state
     <div>
       {

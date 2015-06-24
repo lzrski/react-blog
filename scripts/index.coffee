@@ -19,10 +19,31 @@ app.get '*', (req, res, done) ->
   location = new Location req.path, req.query
   Router.run  routes, location, (error, state, transition) ->
     console.dir state # TODO: What excacly to do with that?
-    rendered = React.renderToString <Router {...state} />
-    fs.readFile 'build/frontend/index.html', 'utf-8', (error, html) ->
-      if error then return done error
-      html = html.replace '<!-- React components will be rendered here -->', rendered
-      res.send html
+    promises = state?.branch
+      .filter (route) -> typeof route.component.fetch is 'function'
+      .map    (route) ->
+        route.component
+          .fetch state.params
+          .then (data) ->
+            console.log 'Got data from component.fetch'
+            console.dir data
+            route.data = data
+
+    console.log 'promises'
+    console.dir promises
+
+    Promise
+      .all promises or []
+      .then ->
+        rendered = React.renderToString <Router {...state} />
+        fs.readFile 'build/frontend/index.html', 'utf-8', (error, html) ->
+          if error then return done error
+          html = html.replace '<!-- React components will be rendered here -->', rendered
+          res.send html
+
+      .catch (error) ->
+        console.log 'There was an error while resolving all promises'
+        console.error error
+
 
 app.listen 8020
