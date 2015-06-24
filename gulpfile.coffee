@@ -35,7 +35,9 @@ gulp.task 'frontend', ->
 gulp.task 'backend', ->
   gulp
     .src 'scripts/**/*.coffee'
+    .pipe sourcemaps.init()
     .pipe do coffee
+    .pipe sourcemaps.write './'
     .pipe gulp.dest 'build/'
 
 gulp.task 'assets', ->
