@@ -1,15 +1,14 @@
 React     = require 'react'
-{ Link }  = require 'react-router'
 
 # Components
-Counter   = require './Counter'
+{ Link }  = require 'react-router'
 
 # Models
 Cats      = require '../models/Cats'
 
 module.exports = class Application extends React.Component
-  constructor : (props) ->
-    super props
+  constructor : (props, context) ->
+    super props, context
     @state =
       # Cats collection can be given by router in props
       cats: props.route?.data or new Cats
@@ -46,6 +45,5 @@ module.exports = class Application extends React.Component
         else
           <p>Loading cats...</p>
       }
-      <Counter />
       { @props.children or <p>Choose a cat</p> }
     </div>

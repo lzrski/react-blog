@@ -1,4 +1,6 @@
 React     = require 'react'
+
+# Components
 { Link }  = require 'react-router'
 
 # Models
@@ -11,8 +13,8 @@ module.exports = class Greet extends React.Component
     cat = new Cat params.cat
     do cat.fetch # Return a promise that resolves to cat model
 
-  constructor : (props) ->
-    super props
+  constructor : (props, context) ->
+    super props, context
     @state =
       cat   : props.route?.data or new Cat props.params.cat
 

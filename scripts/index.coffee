@@ -29,7 +29,6 @@ app.get '*', (req, res, done) ->
     # TODO: Is this a correct approach?
     if not state then return done new Error "Not Found (404)"
 
-    console.dir state # TODO: What excacly to do with that?
     promises = state.branch
       .filter (route) -> typeof route.component.fetch is 'function'
       .map    (route) ->
