@@ -14,8 +14,6 @@ module.exports = class Application extends React.Component
       cats: props.route?.data or new Cats
 
   @fetch = (params) ->
-    console.log 'Fetching the list of cats'
-    console.dir params
     cats = new Cats
     do cats.fetch # Return a promise that resolves to cats collection
 
@@ -28,9 +26,6 @@ module.exports = class Application extends React.Component
         @setState { cats }
 
   render  : ->
-    console.log "Props of application"
-    console.dir @props
-
     <div>
       <Link to = '/'><h1>Welcome to the Application</h1></Link>
       {

@@ -22,6 +22,7 @@ app.get '*', (req, res, done) ->
     ---
 
     GET #{location.pathname}
+    
   """
   Router.run  routes, location, (error, state, transition) ->
     if error then return done error
@@ -32,15 +33,13 @@ app.get '*', (req, res, done) ->
     promises = state.branch
       .filter (route) -> typeof route.component.fetch is 'function'
       .map    (route) ->
+        console.dir route
         route.component
           .fetch state.params
           .then (data) ->
             console.log 'Got data from component.fetch'
             console.dir data
             route.data = data
-
-    console.log 'promises'
-    console.dir promises
 
     Promise
       .all promises or []
