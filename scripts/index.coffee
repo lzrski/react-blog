@@ -14,6 +14,7 @@ routes      = require './routes'
 app = new Express
 
 app.use '/assets/', Express.static 'build/frontend/'
+app.use '/',        Express.static 'build/content/'
 app.get '*', (req, res, done) ->
   # TODO: Disassable the pyramid of doom
   location = new Location req.path, req.query
@@ -22,7 +23,7 @@ app.get '*', (req, res, done) ->
     ---
 
     GET #{location.pathname}
-    
+
   """
   Router.run  routes, location, (error, state, transition) ->
     if error then return done error

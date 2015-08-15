@@ -45,6 +45,11 @@ gulp.task 'assets', ->
     .src './assets/**/*'
     .pipe gulp.dest 'build/frontend'
 
+gulp.task 'content', ->
+  gulp
+    .src './content/**/*'
+    .pipe gulp.dest 'build/content'
+
 gulp.task 'clear', (done) ->
   del './build/**/*', done
 
@@ -73,6 +78,7 @@ gulp.task 'build', gulp.series [
   'clear'
   gulp.parallel [
     'assets'
+    'content'
     'backend'
     'frontend'
     'styles'
@@ -90,6 +96,7 @@ gulp.task 'watch', (done) ->
     'serve'
   ]
   gulp.watch ['./assets/**/*'],   gulp.series   ['assets']
+  gulp.watch ['./content/**/*'],  gulp.series   ['content']
   gulp.watch ['./styles/**/*'],   gulp.series   ['styles']
 
 
