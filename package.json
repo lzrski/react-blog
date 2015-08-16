@@ -2,7 +2,7 @@
   "name": "react-blog",
   "version": "0.0.0",
   "description": "Simple react + rackt/react-router app with server side rendering",
-  "main": "build/index.js",
+  "main": "build/backend.js",
   "scripts": {
     "prepublish": "gulp build",
     "develop": "gulp develop",
