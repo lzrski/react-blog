@@ -6,17 +6,23 @@ React     = require 'react'
 # Stores
 store     = require '../stores/posts'
 
+# Actions
+{
+  getPosts
+}         = require '../actions'
+
 module.exports = class Application extends React.Component
   constructor : (props, context) ->
     super props, context
-    @state = do store.getInitialState
+    @state = props.route.data
+
+  @fetch: ->
+    do getPosts
 
   componentDidMount : ->
-    console.log 'Subscribing to store'
     @unsubscribe = store.listen (data) -> @setState data
 
   componentWillUnmount: ->
-    console.log 'Unsubscribing from store'
     do @unsubscribe
 
   render  : ->

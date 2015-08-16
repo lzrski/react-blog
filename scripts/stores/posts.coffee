@@ -1,10 +1,26 @@
-Reflux  = require 'reflux'
+Reflux    = require 'reflux'
+# Actions
+{
+  getPosts
+}         = require '../actions'
 
 module.exports = Reflux.createStore
-  getInitialState : ->
-    posts: [
-      'george'
-      'katiusza'
-      'skubi'
-      'hello'
-    ]
+  init  : ->
+    @listenTo getPosts, @onGetPosts
+
+  onGetPosts: ->
+    if window?
+      # This happens client side
+      getPosts.completed posts: [
+        'Client'
+        'Side'
+        'Posts'
+      ]
+    else
+      # This happens on the client
+      getPosts.completed posts: [
+        'Server'
+        'Side'
+        'Posts'
+        'Awesome'
+      ]
