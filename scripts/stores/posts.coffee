@@ -3,7 +3,7 @@ Reflux    = require 'reflux'
 {
   getPosts
 }         = require '../actions'
-
+sys = require 'sys'
 module.exports = Reflux.createStore
   init  : ->
     @listenTo getPosts, @onGetPosts
@@ -11,14 +11,17 @@ module.exports = Reflux.createStore
   fetch : ->
     if window?
       # This happens client side
-      @state =  posts: [
-        'Client'
-        'Side'
-        'Posts'
-      ]
-      Promise.resolve @state
+      fetch '/data'
+        .then (res) -> do res.json
+        .then (posts) ->
+          @state = { posts }
+          Promise.resolve @state
+        .catch (error) ->
+          Promise.reject error
+
+
     else
-      # This happens on the client
+      # This happens on the server
       @state = posts: [
         'Server'
         'Side'
