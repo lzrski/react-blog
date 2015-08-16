@@ -3,42 +3,33 @@ React     = require 'react'
 # Components
 { Link }  = require 'react-router'
 
-# Models
-Cats      = require '../models/Cats'
+# Stores
+store     = require '../stores/posts'
 
 module.exports = class Application extends React.Component
   constructor : (props, context) ->
     super props, context
-    @state =
-      # Cats collection can be given by router in props
-      cats: props.route?.data or new Cats
-
-  @fetch = (params) ->
-    cats = new Cats
-    do cats.fetch # Return a promise that resolves to cats collection
+    @state = do store.getInitialState
 
   componentDidMount : ->
-    { cats } = @state
-    # TODO: Only fetch if not already there. It might have been fetch by server.
-    cats
-      .fetch()
-      .then =>
-        @setState { cats }
+    console.log 'Subscribing to store'
+    @unsubscribe = store.listen (data) -> @setState data
+
+  componentWillUnmount: ->
+    console.log 'Unsubscribing from store'
+    do @unsubscribe
 
   render  : ->
     <div>
-      <Link to = '/'><h1>Welcome to the Application</h1></Link>
+      <Link to = '/'><h1>React blog</h1></Link>
       {
-        if @state.cats.items?
-          <ul>
-            { for cat in @state.cats.items
-              <li key={cat.slug}>
-                <Link to={ "/welcome/#{cat.slug}" }>{ cat.name }</Link>
-              </li>
-            }
-          </ul>
-        else
-          <p>Loading cats...</p>
+        { posts } = @state
+
+        <ul>{
+          <li key = {id}>
+            <Link to={ "/#{id}" }>{ post }</Link>
+          </li> for post, id in posts
+        }</ul> if posts?
       }
-      { @props.children or <p>Choose a cat</p> }
+      { @props.children or <p>Please choose a post about a cat.</p> }
     </div>
