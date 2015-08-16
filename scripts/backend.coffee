@@ -14,7 +14,7 @@ routes      = require './routes'
 app = new Express
 
 app.use '/assets/', Express.static 'build/frontend/'
-app.use '/',        Express.static 'build/content/'
+app.use '/data',    require './middleware/data'
 app.get '*', (req, res, done) ->
   # TODO: Disassable the pyramid of doom
   location = new Location req.path, req.query
