@@ -31,6 +31,8 @@ app.get '*', (req, res, done) ->
     # TODO: Is this a correct approach?
     if not state then return done new Error "Not Found (404)"
 
+    initial_state = {} # Initial data to hydrate components on client side
+
     promises = state.branch
       .filter (route) -> typeof route.component.fetch is 'function'
       .map    (route) ->
@@ -40,6 +42,7 @@ app.get '*', (req, res, done) ->
           .then (data) ->
             console.log 'Got data from component.fetch'
             console.dir data
+            initial_state[route.path] = data
             route.data = data
 
     Promise
@@ -48,7 +51,9 @@ app.get '*', (req, res, done) ->
         rendered = React.renderToString <Router {...state} />
         fs.readFile 'build/frontend/index.html', 'utf-8', (error, html) ->
           if error then return done error
-          html = html.replace '<!-- React components will be rendered here -->', rendered
+          html = html
+            .replace '<!-- React components will be rendered here -->', rendered
+            .replace '<!-- Initial state goes here -->', JSON.stringify initial_state
           res.send html
 
       .catch (error) ->

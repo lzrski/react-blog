@@ -14,13 +14,17 @@ store     = require '../stores/posts'
 module.exports = class Application extends React.Component
   constructor : (props, context) ->
     super props, context
-    @state = props.route.data
+    {
+      data
+      path
+    } = props.route
+    @state = data or window?.state[path]
 
   @fetch: ->
     do getPosts
 
   componentDidMount : ->
-    @unsubscribe = store.listen (data) -> @setState data
+    @unsubscribe = store.listen (data) => @setState data
 
   componentWillUnmount: ->
     do @unsubscribe
@@ -37,5 +41,10 @@ module.exports = class Application extends React.Component
           </li> for post, id in posts
         }</ul> if posts?
       }
+      <button
+        onClick = { -> do getPosts }
+      >
+        Get posts
+      </button>
       { @props.children or <p>Please choose a post about a cat.</p> }
     </div>
