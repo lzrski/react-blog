@@ -8,19 +8,29 @@ module.exports = Reflux.createStore
   init  : ->
     @listenTo getPosts, @onGetPosts
 
-  onGetPosts: ->
+  fetch : ->
     if window?
       # This happens client side
-      getPosts.completed posts: [
+      @state =  posts: [
         'Client'
         'Side'
         'Posts'
       ]
+      Promise.resolve @state
     else
       # This happens on the client
-      getPosts.completed posts: [
+      @state = posts: [
         'Server'
         'Side'
         'Posts'
         'Awesome'
       ]
+      Promise.resolve @state
+
+  onGetPosts: ->
+    @fetch()
+      .then (state)   =>
+        @trigger state
+        getPosts.completed state
+      .catch (error)  =>
+        getPosts.failed error
