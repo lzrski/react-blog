@@ -3,32 +3,28 @@ Reflux    = require 'reflux'
 {
   getPosts
 }         = require '../actions'
-sys = require 'sys'
+fetch     = window?.fetch or require 'node-fetch'
+URL       = require 'url'
+
 module.exports = Reflux.createStore
   init  : ->
     @listenTo getPosts, @onGetPosts
 
   fetch : ->
-    if window?
-      # This happens client side
-      fetch '/data'
-        .then (res) -> do res.json
-        .then (posts) ->
-          @state = { posts }
-          Promise.resolve @state
-        .catch (error) ->
-          Promise.reject error
-
-
-    else
+    url = URL.parse '/data'
+    unless window?
       # This happens on the server
-      @state = posts: [
-        'Server'
-        'Side'
-        'Posts'
-        'Awesome'
-      ]
-      Promise.resolve @state
+      url.protocol  = 'http'
+      url.hostname  = 'localhost'
+      url.port      = 8020
+
+    fetch URL.format url
+      .then (res) -> do res.json
+      .then (posts) ->
+        @state = { posts }
+        Promise.resolve @state
+      .catch (error) ->
+        Promise.reject error
 
   onGetPosts: ->
     @fetch()
